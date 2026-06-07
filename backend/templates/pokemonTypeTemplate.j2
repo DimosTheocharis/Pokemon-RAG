@@ -1,0 +1,9 @@
+Type: {{ pokemonType }}
+
+The {{ pokemonType }} type is highly effective when attacking the following types: {% for type in doubleDamageTo %}{{ type }}{% if not loop.last %}, {% endif %}{% endfor %}.
+
+The {{ pokemonType }} type is vulnerable to attacks from the following types: {% for type in doubleDamageFrom %}{{ type }}{% if not loop.last%}, {% endif %}{% endfor %}.
+
+Pokémon of the {{ pokemonType }} type are completely immune to damage from the following types: {% for type in noDamageFrom %}{{ type }}{% if not loop.last%}, {% endif %}{% endfor %}.
+
+Moves of the {{ pokemonType }} type have no effect on the following types: {% for type in noDamageTo %}{{ type }}{% if not loop.last%}, {% endif %}{% endfor %}.
