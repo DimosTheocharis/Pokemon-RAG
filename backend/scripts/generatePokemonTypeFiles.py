@@ -31,5 +31,5 @@ def generatePokemonTypeFiles():
             )
 
             # Save the generated text to a text file
-            with open(f"data/{pokemonType.value}.txt", "w") as f:
+            with open(f"data/pokemonTypes/{pokemonType.value}.txt", "w") as f:
                 f.write(documentText)

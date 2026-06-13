@@ -5,10 +5,11 @@ import os, json
 from pathlib import Path
 
 BACKEND_DIRECTORY = Path(__file__).resolve().parent
-DATA_DIRECTORY = os.path.join(BACKEND_DIRECTORY, 'data')
+POKEMON_DIRECTORY = os.path.join(BACKEND_DIRECTORY, 'data', 'pokemon')
+POKEMON_TYPES_DIRECTORY = os.path.join(BACKEND_DIRECTORY, 'data', 'pokemonTypes')
 METADATA_DIRECTORY = os.path.join(BACKEND_DIRECTORY, 'metadata')
 
-def file_metadata_func(file_path: str):
+def generatePokemonMetadata(file_path: str):
     pokemonName = ('r' + file_path).split('\\')[-1][:-4]
     if os.path.isfile(os.path.join(METADATA_DIRECTORY, f'{pokemonName}.json')):
         with open(os.path.join(METADATA_DIRECTORY, f'{pokemonName}.json'), 'r') as f:
@@ -24,7 +25,11 @@ def createIndex() -> VectorStoreIndex:
         Create a VectorStoreIndex from documents in the './backend/data' directory, 
         using Ollama as the LLM and embedding model.
     '''
-    documents = SimpleDirectoryReader(DATA_DIRECTORY, file_metadata=file_metadata_func).load_data()
+    pokemonDocuments = SimpleDirectoryReader(POKEMON_DIRECTORY, file_metadata=generatePokemonMetadata).load_data()
+    pokemonTypeDocuments = SimpleDirectoryReader(POKEMON_TYPES_DIRECTORY).load_data()
+
+    # Concatenate all documents
+    documents = pokemonDocuments + pokemonTypeDocuments
 
     # Set up the LLM and embedding model
     Settings.llm = Ollama(
