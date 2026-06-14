@@ -52,7 +52,7 @@ if (prompt):
         # Create a ChunkInformation object for each chunk
         for index, node in enumerate(response.source_nodes):
             text = node.get_text()
-            score = node.get_score()
+            score = round(node.get_score(), 2)
             
             metadata = node.metadata
             fileName = ''
@@ -65,7 +65,8 @@ if (prompt):
                 "rank": index + 1,
                 "score": score, 
                 "fileName": fileName,
-                "text": text
+                "text": text,
+                "metadata": metadata,
             }
             
             retrievedChunks.append(chunk)
