@@ -5,6 +5,7 @@ setupFrontend()
 import streamlit as st
 from llama_index.core import VectorStoreIndex 
 from middleware.middleman import Middleware
+from frontend.components.retrievedChunksTableComponent import retrievedChunksTableComponent, ChunkInformation
 
 
 st.title("Pokemon RAG")
@@ -18,8 +19,8 @@ if "messages" not in st.session_state:
 for message in st.session_state.messages:
     chatMessage = st.chat_message(message["role"])
     chatMessage.markdown(message["content"])
-
-
+    if ("retrievedChunks" in message):
+        retrievedChunksTableComponent(message["retrievedChunks"])
 
 
 @st.cache_resource(show_spinner=True)
@@ -47,7 +48,37 @@ if (prompt):
     chatMessage = st.chat_message("assistant")
     response = queryEngine.query(prompt)
     if (response):
+        retrievedChunks: list[ChunkInformation] = []
+        # Create a ChunkInformation object for each chunk
+        for index, node in enumerate(response.source_nodes):
+            text = node.get_text()
+            score = node.get_score()
+            
+            metadata = node.metadata
+            fileName = ''
+            if (metadata and 'file_name' in metadata):
+                fileName = metadata['file_name']
+            if (metadata and 'fileName' in metadata):
+                fileName = metadata['fileName']
+
+            chunk = {
+                "rank": index + 1,
+                "score": score, 
+                "fileName": fileName,
+                "text": text
+            }
+            
+            retrievedChunks.append(chunk)
+
         chatMessage.markdown(response.response)
 
+        # Display retrieved chunks under the response
+        retrievedChunksTableComponent(retrievedChunks)
+
+
         # Add assistant response to chat history
-        st.session_state.messages.append({"role": "assistant", "content": response.response})
+        st.session_state.messages.append({
+            "role": "assistant", 
+            "content": response.response,
+            "retrievedChunks": retrievedChunks
+        })
