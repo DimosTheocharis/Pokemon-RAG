@@ -14,6 +14,7 @@ def generatePokemonMetadata(file_path: str):
     if os.path.isfile(os.path.join(METADATA_DIRECTORY, f'{pokemonName}.json')):
         with open(os.path.join(METADATA_DIRECTORY, f'{pokemonName}.json'), 'r') as f:
             metadata = json.load(f)
+            metadata["fileName"] = f"{pokemonName}.txt"
             return metadata
     else:
         print(f'This is not a file: {os.path.join(METADATA_DIRECTORY, f'{pokemonName}.json')}')

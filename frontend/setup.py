@@ -17,8 +17,6 @@ def setupFrontend():
 
     for path in relativeDirectories:
         newPath: str = os.path.join(currentWorkingDirectory, path)
-
-        print(newPath)
         
         if (not (newPath in sys.path)):
             sys.path.append(newPath)
